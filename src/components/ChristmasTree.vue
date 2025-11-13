@@ -3,7 +3,6 @@ import { onMounted, ref } from 'vue'
 import { Scene } from '../three/scene'
 import { Renderer } from '../three/renderer'
 import { ChristmasTree } from '../three/christmasTree'
-import { Controls } from '../three/controls'
 // 用于存储Three.js渲染容器的引用
 const container = ref(null)
 
@@ -37,14 +36,6 @@ onMounted(() => {
 
   // 创建圣诞树实例
   const christmasTree = new ChristmasTree(sceneManager.scene, params)
-
-  // 创建控制面板，并设置各种参数变化时的回调函数
-  new Controls(params, renderer, sceneManager, {
-    onTreeUpdate: () => christmasTree.createTree(),        // 树参数变化时重新创建树
-    onStarUpdate: () => christmasTree.loadStar(),         // 星星参数变化时重新加载星星
-    onParticleSize: () => (christmasTree.points.material.size = params.粒子大小),  // 更新粒子大小
-    onOpacityChange: () => (christmasTree.points.material.opacity = params.透明度)  // 更新透明度
-  })
 
   // 定义动画循环函数
   const animate = () => {

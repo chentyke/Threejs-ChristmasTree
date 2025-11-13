@@ -26,6 +26,7 @@ export class ChristmasTree {
     this.ground = null
     this.fallingStars = []
     this.lastStarTime = 0 // 用于控制星星生成频率
+    this.titleSprite = null
 
     // 创建圆形粒子纹理
     const textureLoader = new THREE.TextureLoader()
@@ -35,6 +36,7 @@ export class ChristmasTree {
 
     this.createTree()
     this.createGround()
+    this.createTitleSprite()
     this.loadStar()
   }
 
@@ -169,6 +171,7 @@ export class ChristmasTree {
     this.points = new THREE.Points(particles, material)
     this.points.name = 'treeParticles'
     this.scene.add(this.points)
+    this.updateTitleSpritePosition()
   }
 
   /**
@@ -284,6 +287,7 @@ export class ChristmasTree {
         this.scene.add(this.star)
         // 创建星星周围的粒子
         this.createStarParticles()
+        this.updateTitleSpritePosition()
       },
       undefined,
       (error) => {
@@ -310,6 +314,69 @@ export class ChristmasTree {
     this.ground.position.y = -0.1
     this.ground.receiveShadow = true
     this.scene.add(this.ground)
+  }
+
+  /**
+   * 创建顶部标题精灵
+   */
+  createTitleSprite() {
+    if (this.titleSprite) {
+      this.scene.remove(this.titleSprite)
+      if (this.titleSprite.material.map) {
+        this.titleSprite.material.map.dispose()
+      }
+      this.titleSprite.material.dispose()
+      this.titleSprite = null
+    }
+
+    const canvas = document.createElement('canvas')
+    canvas.width = 1024
+    canvas.height = 256
+    const context = canvas.getContext('2d')
+    context.clearRect(0, 0, canvas.width, canvas.height)
+
+    const gradient = context.createLinearGradient(0, 0, canvas.width, 0)
+    gradient.addColorStop(0, '#fff4c1')
+    gradient.addColorStop(0.5, '#ffae00')
+    gradient.addColorStop(1, '#fff4c1')
+
+    context.fillStyle = gradient
+    context.font = 'bold 180px "Microsoft YaHei", "Noto Sans SC", sans-serif'
+    context.textAlign = 'center'
+    context.textBaseline = 'middle'
+    context.shadowColor = 'rgba(255, 140, 0, 0.9)'
+    context.shadowBlur = 25
+    context.lineWidth = 8
+    context.strokeStyle = 'rgba(255, 255, 255, 0.35)'
+    context.strokeText('日落帝国', canvas.width / 2, canvas.height / 2)
+    context.fillText('日落帝国', canvas.width / 2, canvas.height / 2)
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.colorSpace = THREE.SRGBColorSpace
+    texture.needsUpdate = true
+
+    const material = new THREE.SpriteMaterial({
+      map: texture,
+      transparent: true,
+      depthWrite: false
+    })
+
+    this.titleSprite = new THREE.Sprite(material)
+    this.titleSprite.name = 'sunset-empire-title'
+    const spriteWidth = Math.max(this.params.树宽 * 2.4, 4)
+    const spriteHeight = spriteWidth * 0.35
+    this.titleSprite.scale.set(spriteWidth, spriteHeight, 1)
+    this.updateTitleSpritePosition()
+    this.scene.add(this.titleSprite)
+  }
+
+  /**
+   * 根据当前树高更新标题位置
+   */
+  updateTitleSpritePosition() {
+    if (!this.titleSprite) return
+    const heightOffset = this.params.树高 + 1.4
+    this.titleSprite.position.set(0, heightOffset, 0)
   }
 
   /**
