@@ -1,4 +1,4 @@
-name = "threejs-christmas-tree"
+name = "christmastree"
 main = "worker/index.js"
 compatibility_date = "2024-11-20"
 
