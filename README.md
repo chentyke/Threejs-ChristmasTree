@@ -41,6 +41,14 @@
    npm run build
    ```
 
+### Cloudflare Workers 构建与部署
+
+1. 使用 `npx wrangler login` 绑定 Cloudflare 账号（首次必需）。
+2. 运行 `npm run workers:build` 生成 `dist` 目录。
+3. 执行 `npm run workers:deploy` 将静态资源和 Worker 一起发布到 Workers 平台。
+
+> 本地调试：`npm run workers:dev`，它会先构建再通过 `wrangler dev --local` 以 Workers 方式预览。
+
 ## 技术栈
 
 - Vue 3：前端框架

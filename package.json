@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "workers:build": "npm run build",
+    "workers:dev": "npm run workers:build && wrangler dev --local --config wrangler.toml",
+    "workers:deploy": "npm run workers:build && wrangler deploy --config wrangler.toml"
   },
   "dependencies": {
     "gsap": "^3.12.5",
@@ -16,6 +19,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
     "lil-gui": "^0.20.0",
-    "vite": "^6.0.5"
+    "vite": "^6.0.5",
+    "wrangler": "^4.47.0"
   }
 }
